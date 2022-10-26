@@ -31,7 +31,10 @@ public class FileController {
     @PostMapping
     public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file) {
         try {
-            fileService.save(file);
+            /* Using Multipart file as input */
+//            fileService.save(file);
+            /* Using InputStream as input */
+            fileService.store(file.getOriginalFilename(), file.getInputStream(), file);
 
             return ResponseEntity.status(HttpStatus.OK)
                     .body(String.format("File uploaded successfully: %s", file.getOriginalFilename()));
@@ -57,7 +60,7 @@ public class FileController {
         FileResponse fileResponse = new FileResponse();
         fileResponse.setId(File.getId());
         fileResponse.setName(File.getName());
-        fileResponse.setContentType(File.getContentType());
+//        fileResponse.setContentType(File.getContentType());
         fileResponse.setSize(File.getSize());
         fileResponse.setUrl(downloadURL);
 
@@ -76,7 +79,7 @@ public class FileController {
         File File = FileOptional.get();
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + File.getName() + "\"")
-                .contentType(MediaType.valueOf(File.getContentType()))
-                .body(File.getData());
+                .contentType(MediaType.valueOf(File.getMetadata().getContentType()))
+                .body(File.getChunk().getData());
     }
 }

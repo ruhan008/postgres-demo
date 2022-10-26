@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.Embedded;
+
 @Component
 @Data
 @AllArgsConstructor
@@ -15,4 +17,6 @@ public class FileResponse {
     private Long size;
     private String url;
     private String contentType;
+    @Embedded
+    private Metadata metadata;
 }
